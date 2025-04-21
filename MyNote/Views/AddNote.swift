@@ -53,7 +53,20 @@ struct AddNote: View {
                     isCompleted: false
                 )
                 
-                notes.append(note)
+                if let noteToEdit = noteToEdit {
+                    guard  let indexOfNote = notes.firstIndex(of: noteToEdit) else {
+                        alertTitle = "Somethng went wrong"
+                        alertMessage = "Cannot update this note right now."
+                        showAlert = true
+                        return
+                    }
+                    notes[indexOfNote] = note
+                }
+                
+                else {
+                    notes.append(note)
+                }
+                
                 
                 dismiss()
                 

@@ -10,18 +10,7 @@ import SwiftUI
 struct HomeView: View {
     // MARK: - PROPERTIES
     
-    @State private var notes: [NoteModel] = [
-        NoteModel(
-            title: "Learn SwiftUI",
-            type: .urgent,
-            date: Date(),
-            isCompleted: true,
-        ),
-        NoteModel(title: "Finishing a course today and i will definitly figure out the code too",
-                  type: .optional, date: Date(),
-                  isCompleted: false,
-                 )
-    ]
+    @State private var notes: [NoteModel] = []
     
     @State private var showEditNoteView = false
     @State private var noteToEdit: NoteModel?
@@ -55,12 +44,13 @@ struct HomeView: View {
                             Button {
                                 noteToEdit = note
                             } label: {
-                                NoteView(note: note)
+                                NoteView(note: note) {
+                                    toggleComplete(note: note)
+                                }
                                     .foregroundStyle(.black)
                             }
-                           
-
                         }//: LOOP
+                        .onDelete(perform: delete)
                     }
                 }//: VSTACK
                 FloatingButton()
@@ -76,6 +66,14 @@ struct HomeView: View {
         }//: NAVIGATION STACK
        
     }
+    private func delete(at offsets: IndexSet) {
+        notes.remove(atOffsets: offsets)
+    }
+    private func toggleComplete(note: NoteModel) {
+        guard let index = notes.firstIndex(of: note) else { return }
+        notes[index].isCompleted.toggle()
+    }
+
 }
 
 #Preview {
@@ -85,6 +83,7 @@ struct HomeView: View {
 
 struct NoteView: View {
     let note: NoteModel
+    let onToggleComplete: () -> Void
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -93,9 +92,9 @@ struct NoteView: View {
                         systemName:note.isCompleted ? "checkmark.circle.fill" : "circle"
                     )
                     .foregroundStyle(note.isCompleted ? .green : .red)
+                    .onTapGesture {onToggleComplete()}
                     Text(note.title)
                         .font(.headline)
-                        .lineLimit(1)
                 }
                 Text(note.displayDate)
                     .font(.caption)
