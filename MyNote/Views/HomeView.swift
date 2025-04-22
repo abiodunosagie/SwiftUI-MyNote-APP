@@ -38,19 +38,37 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack {
-                    List {
-                        ForEach(notes) { note in
-                            Button {
-                                noteToEdit = note
-                            } label: {
-                                NoteView(note: note) {
-                                    toggleComplete(note: note)
-                                }
+                if notes.isEmpty {
+                    VStack{
+                        Image(systemName: "note.text")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 60, height: 60)
+                            .foregroundStyle(.gray)
+                        
+                        Text("No notes yet")
+                            .font(.headline)
+                            .foregroundStyle(.gray)
+                        Text("Tap the + button to create your first note.")
+                            .font(.caption)
+                            .foregroundStyle(.gray)
+                    }
+                    .multilineTextAlignment(.center)
+                } else {
+                    VStack {
+                        List {
+                            ForEach(notes) { note in
+                                Button {
+                                    noteToEdit = note
+                                } label: {
+                                    NoteView(note: note) {
+                                        toggleComplete(note: note)
+                                    }
                                     .foregroundStyle(.black)
-                            }
-                        }//: LOOP
-                        .onDelete(perform: delete)
+                                }
+                            }//: LOOP
+                            .onDelete(perform: delete)
+                        }
                     }
                 }//: VSTACK
                 FloatingButton()
