@@ -18,9 +18,28 @@ struct AddNote: View {
     @Binding var notes: [NoteModel]
     var noteToEdit: NoteModel?
     @Environment(\.dismiss) var dismiss
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    
     
     var body: some View {
         VStack(alignment: .leading) {
+            if horizontalSizeClass == .regular && verticalSizeClass == .compact || horizontalSizeClass == .compact && verticalSizeClass == .compact {
+                HStack{
+                    Spacer()
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(.black)
+                            
+                    }
+
+                }
+                .padding(.top)
+            }
+     
             Text("Task title")
                 .font(.system(size: 20, weight: .semibold))
             TextField("Title", text: $notetitle)
